@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<head>
+    <title>NA::Rasterizer </title>
+  
+	<script type="text/javascript" src="Module.Rasterizer.js"></script>
+	<script type="text/javascript" src="Rasterizer.Assets.js"></script>
+		
+	<script type="text/javascript" src="Source/Header.js"></script>
+	<script type="text/javascript" src="Source/Camera.js"></script>
+	<script type="text/javascript" src="Source/ContextCanvas.js"></script>
+	<script type="text/javascript" src="Source/Math.js"></script>
+	<script type="text/javascript" src="Source/Mesh.js"></script>
+	<script type="text/javascript" src="Source/Types.js"></script>
+	
+	
+	<!--> Assets <-->
+		<script type="text/javascript" src="Assets/Cube.js"></script>
+		
+		
+	<script type="text/javascript"> 
+		function onLoad() {
+		CanvasCreate(GLOBAL.WIDTH, GLOBAL.HEIGHT,'canvas','renderContext');
+		contextCanvas = new ContextCanvas('canvas');
+		
+		// Rotation code
+		radian = 0; camDist = 10; 
+		
+		// Primitive creation
+		mesh = MeshLibrary.Cube();
+		
+		//grid = MeshGrid(10); 
+		contextCanvas.state.point.size = 5; 
+			
+		//setInterval('loop()', 16.6);
+		setTimeout( 'loop()', 1 );
+	}
+	
+	/*--Program Functions----------------------------------------------------------*/
+	function onMouseMove( e ) {
+		if( IE ) {
+			contextCanvas.mouse2d[0] = event.clientX + document.body.scrollLeft;
+			contextCanvas.mouse2d[1] = event.clientY + document.body.scrollTop;
+		} else {
+			contextCanvas.mouse2d[0] = e.pageX;
+			contextCanvas.mouse2d[1] = e.pageY;
+		}
+		
+		// negative values in ns4
+		if( contextCanvas.mouse2d[0] < 0 ) contextCanvas.mouse2d[0] = 0;
+		if( contextCanvas.mouse2d[1] < 0 ) contextCanvas.mouse2d[1] = 0;
+		
+		return true;
+	}
+
+	function loop() {
+		//contextCanvas.Clear();
+		contextCanvas.DrawingSurfaceAlloc();
+		//contextCanvas.DrawingSurfaceGet(); 
+		
+		contextCanvas.Print2D("Nassim Amar 2012",[0,10]);
+		contextCanvas.Print2D("NA::Rasterizer", [0,20]);
+		contextCanvas.Print2D("FPS: " + contextCanvas.getFPS().toFixed(1),[0,30]);
+		contextCanvas.Print2D("Mouse(x,y): " + contextCanvas.mouse2d.toString(),[0,40]);
+		contextCanvas.Print2D("Cam(x,y,z): " + contextCanvas.camera.loc.toString(),[0,50]);					  
+
+		// Animation control
+		radian += .04; 
+		
+		if( radian > Math.PI * 2 )
+			radian = 0; 
+			
+		var locMesh = [ 0, 0, 0 ]; //[ Math.sin( radian ) * 10, 0, 30 ];
+	 
+		// Camera tranformation
+		var theta = 2 * -Math.PI * contextCanvas.mouse2d[0] / GLOBAL.WIDTH;
+		var phi = Math.PI * contextCanvas.mouse2d[1] / GLOBAL.HEIGHT; 
+			
+		contextCanvas.camera.LookAt([Math.cos( 0 )*camDist,5,Math.sin(0)*camDist],[0,0,0]);
+					
+		//contextCanvas.camera.LookAt( [ 0, 0, 0], [ 0, 0, 0 ] );
+		//contextCanvas.camera.Move( [ 0, 0, .1 ], [ 0, 0, 1 ] ); 
+	
+		// DRAWING
+		// MESH
+		contextCanvas.Enable( contextCanvas.STATE.RENDER.LINE );
+		 
+		mesh.transform.setRot([0,radian,0]);
+		mesh.transform.setScl([6,6,6]);
+		mesh.transform.setLoc([0,0,0]); 
+		
+		contextCanvas.Draw3DMesh( mesh );
+		
+		contextCanvas.Enable( contextCanvas.STATE.RENDER.VERTEX );
+		contextCanvas.Enable( contextCanvas.STATE.DEBUG.VERTEXNUMBERS );
+		contextCanvas.Draw3DMesh( mesh );
+		
+		// END DRAWING
+		
+		contextCanvas.DrawingSurfaceDisplay();
+		contextCanvas.Update( 'loop()' ); 
+	}
+	</script>
+    <style>
+        body
+        {
+            color: white;
+            background-color: #D0D0D0;
+            margin: 50px;
+            text-align: center;
+        }
+        canvas
+        {
+            outline: solid white;
+            background-color: #A8A8A8;
+        }
+    </style>
+</head>
+<body onload="onLoad();">
+
+<div id="renderContext">
+
+</div>
+
+</body>
+</html>

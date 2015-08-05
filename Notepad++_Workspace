@@ -1,0 +1,28 @@
+<NotepadPlus>
+    <Project name="Module.Rasterizer.Workspace">
+        <Folder name="Assets">
+            <File name="Assets\Apple.js" />
+            <File name="Assets\Assets.blend" />
+            <File name="Assets\Assets.blend1" />
+            <File name="Assets\Cube.js" />
+            <File name="Assets\namar0x0309.js" />
+            <File name="Assets\Suzanne.js" />
+        </Folder>
+        <Folder name="Source">
+            <File name="Source\Camera.js" />
+            <File name="Source\ContextCanvas.js" />
+            <File name="Source\Header.js" />
+            <File name="Source\Math.js" />
+            <File name="Source\Mesh.js" />
+            <File name="Source\Types.js" />
+        </Folder>
+        <Folder name="Tools">
+            <File name="Tools\BlenderExporter.py" />
+        </Folder>
+        <File name="compile.bat" />
+        <File name="index.html" />
+        <File name="LICENSE" />
+        <File name="Module.Rasterizer.js" />
+        <File name="Rasterizer.Assets.js" />
+    </Project>
+</NotepadPlus>

@@ -1,44 +1,43 @@
 ::AUTHOR: Nassim Amar
 ::PROJECT: Module.Rasterizer
 
-@echo off
+rem @echo off
 
 ::VARIABLE SETUP
 set arg=%1
-set SOURCEDIR=Source
-set ASSETDIR=Assets
+set SOURCEDIR=%~dp0Source
+set ASSETDIR=%~dp0Assets
+set OUTPUTSRC=Module.Rasterizer.js
+set OUTPUTASSETS=Rasterizer.Assets.js
+set COMPILER="%~dp0Tools\closurecompiler\compiler.jar"
 
 ::COMPILING
 if /i "%1" == "debug" (goto :Debug) else (goto :Release)
 
 ::DEBUG BUILD
 :Debug
-type %SOURCEDIR%\Header.js > Module.Rasterizer.temp.js
-type %SOURCEDIR%\Types.js >> Module.Rasterizer.temp.js
-type %SOURCEDIR%\Math.js >> Module.Rasterizer.temp.js
-type %SOURCEDIR%\Mesh.js >> Module.Rasterizer.temp.js
-type %SOURCEDIR%\Camera.js >> Module.Rasterizer.temp.js
-type %SOURCEDIR%\ContextCanvas.js >> Module.Rasterizer.temp.js
-
-type %ASSETDIR%\Cube.js >> Rasterizer.Assets.temp.js
-type %ASSETDIR%\namar0x0309.js >> Rasterizer.Assets.temp.js
-type %ASSETDIR%\Suzanne.js >> Rasterizer.Assets.temp.js
-type %ASSETDIR%\Apple.js >> Rasterizer.Assets.temp.js
+copy /b %SOURCEDIR%\*.js %OUTPUTSRC%.TEMP
+copy /b %ASSETDIR%\*.js %OUTPUTASSETS%.TEMP
 goto :Final
 
 ::RELEASE BUILD
 :Release
-java -jar "..\Tools\closurecompiler\compiler.jar" --compilation_level=WHITESPACE_ONLY --js=%SOURCEDIR%\Header.js --js=%SOURCEDIR%\Types.js --js=%SOURCEDIR%\Math.js --js=%SOURCEDIR%\Mesh.js --js=%SOURCEDIR%\Camera.js  --js=%SOURCEDIR%\ContextCanvas.js --js_output_file=Module.Rasterizer.temp.js
+java -jar %COMPILER% ^
+        --compilation_level=WHITESPACE_ONLY ^
+        --js=%OUTPUTSRC%.TEMP ^
+        --js_output_file=%OUTPUTSRC%.TEMP
 
-java -jar "..\Tools\closurecompiler\compiler.jar" --js=%ASSETDIR%\Cube.js --js=%ASSETDIR%\namar0x0309.js --js=%ASSETDIR%\Suzanne.js --js=%ASSETDIR%\Apple.js --js_output_file=Rasterizer.Assets.temp.js
+java -jar %COMPILER% ^
+         --js=%OUTPUTASSETS%.TEMP ^
+         --js_output_file=%OUTPUTASSETS%.TEMP
 goto :Final
 
 :Final
 ::Appending Licenses
-type LICENSE > Module.Rasterizer.js
-type Module.Rasterizer.temp.js >> Module.Rasterizer.js
-del Module.Rasterizer.temp.js
+type LICENSE > %OUTPUTSRC%
+type %OUTPUTSRC%.TEMP >> %OUTPUTSRC%
+del %OUTPUTSRC%.TEMP
 
-type LICENSE > Rasterizer.Assets.js
-type Rasterizer.Assets.temp.js >> Rasterizer.Assets.js
-del Rasterizer.Assets.temp.js
+type LICENSE > %OUTPUTASSETS%
+type %OUTPUTASSETS%.TEMP >> %OUTPUTASSETS%
+del %OUTPUTASSETS%.TEMP
